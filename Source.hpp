@@ -4,9 +4,9 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <iomanip> // Для форматирования вывода
-#include <limits> // Для std::numeric_limits
-#include <sstream> // Для обработки строк
+#include <iomanip> // Г„Г«Гї ГґГ®Г°Г¬Г ГІГЁГ°Г®ГўГ Г­ГЁГї ГўГ»ГўГ®Г¤Г 
+#include <limits> // Г„Г«Гї std::numeric_limits
+#include <sstream> // Г„Г«Гї Г®ГЎГ°Г ГЎГ®ГІГЄГЁ Г±ГІГ°Г®ГЄ
 
 using namespace std;
 
@@ -23,7 +23,7 @@ struct ToDoItem {
     bool isDone;
 };
 
-// Объявление функций
+// ГЋГЎГєГїГўГ«ГҐГ­ГЁГҐ ГґГіГ­ГЄГ¶ГЁГ©
 bool registerUser(vector<User>& users);
 bool loginUser(const vector<User>& users, string& currentUsername, User*& currentUser);
 void loadUsersFromFile(vector<User>& users);
@@ -35,55 +35,55 @@ inline int showMenu();
 
 inline bool registerUser(vector<User>& users) {
     string username, password;
-    cout << "Введите имя пользователя: ";
+    cout << "Г‚ГўГҐГ¤ГЁГІГҐ ГЁГ¬Гї ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«Гї: ";
     getline(cin, username);
 
-    // Проверка уникальности
+    // ГЏГ°Г®ГўГҐГ°ГЄГ  ГіГ­ГЁГЄГ Г«ГјГ­Г®Г±ГІГЁ
     for (const auto& u : users) {
         if (u.username == username) {
-            cout << "Это имя пользователя уже занято." << endl;
+            cout << "ГќГІГ® ГЁГ¬Гї ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«Гї ГіГ¦ГҐ Г§Г Г­ГїГІГ®." << endl;
             system("pause");
             return false;
         }
     }
 
-    cout << "Введите пароль: ";
+    cout << "Г‚ГўГҐГ¤ГЁГІГҐ ГЇГ Г°Г®Г«Гј: ";
     getline(cin, password);
 
     User newUser{ username, password };
     users.push_back(newUser);
     saveUsersToFile(users);
-    cout << "Регистрация прошла успешно!" << endl;
+    cout << "ГђГҐГЈГЁГ±ГІГ°Г Г¶ГЁГї ГЇГ°Г®ГёГ«Г  ГіГ±ГЇГҐГёГ­Г®!" << endl;
     system("pause");
     return true;
 }
 
 inline bool loginUser(const vector<User>& users, string& currentUsername, User*& currentUser) {
     string username, password;
-    cout << "Введите имя пользователя: ";
+    cout << "Г‚ГўГҐГ¤ГЁГІГҐ ГЁГ¬Гї ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«Гї: ";
     getline(cin, username);
-    cout << "Введите пароль: ";
+    cout << "Г‚ГўГҐГ¤ГЁГІГҐ ГЇГ Г°Г®Г«Гј: ";
     getline(cin, password);
 
     for (const auto& u : users) {
         if (u.username == username && u.password == password) {
             currentUsername = username;
-            // Пытаемся найти пользователя для доступа к данным
-            // Но поскольку у нас есть вектор пользователей, можно найти по имени
-            // и передать указатель
-            // Для этого лучше получить его тут
+            // ГЏГ»ГІГ ГҐГ¬Г±Гї Г­Г Г©ГІГЁ ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«Гї Г¤Г«Гї Г¤Г®Г±ГІГіГЇГ  ГЄ Г¤Г Г­Г­Г»Г¬
+            // ГЌГ® ГЇГ®Г±ГЄГ®Г«ГјГЄГі Гі Г­Г Г± ГҐГ±ГІГј ГўГҐГЄГІГ®Г° ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«ГҐГ©, Г¬Г®Г¦Г­Г® Г­Г Г©ГІГЁ ГЇГ® ГЁГ¬ГҐГ­ГЁ
+            // ГЁ ГЇГҐГ°ГҐГ¤Г ГІГј ГіГЄГ Г§Г ГІГҐГ«Гј
+            // Г„Г«Гї ГЅГІГ®ГЈГ® Г«ГіГ·ГёГҐ ГЇГ®Г«ГіГ·ГЁГІГј ГҐГЈГ® ГІГіГІ
             break;
         }
     }
-    // Пока ищем позже. Можно сделать так:
-    for (auto& u : const_cast<vector<User>&>(users)) { // не очень корректно, но допустимо для примера
+    // ГЏГ®ГЄГ  ГЁГ№ГҐГ¬ ГЇГ®Г§Г¦ГҐ. ГЊГ®Г¦Г­Г® Г±Г¤ГҐГ«Г ГІГј ГІГ ГЄ:
+    for (auto& u : const_cast<vector<User>&>(users)) { // Г­ГҐ Г®Г·ГҐГ­Гј ГЄГ®Г°Г°ГҐГЄГІГ­Г®, Г­Г® Г¤Г®ГЇГіГ±ГІГЁГ¬Г® Г¤Г«Гї ГЇГ°ГЁГ¬ГҐГ°Г 
         if (u.username == username && u.password == password) {
             currentUser = &u;
-            cout << "Вход выполнен успешно! Добро пожаловать, " << currentUser->username << "." << endl;
+            cout << "Г‚ГµГ®Г¤ ГўГ»ГЇГ®Г«Г­ГҐГ­ ГіГ±ГЇГҐГёГ­Г®! Г„Г®ГЎГ°Г® ГЇГ®Г¦Г Г«Г®ГўГ ГІГј, " << currentUser->username << "." << endl;
             return true;
         }
     }
-    cout << "Неверное имя пользователя или пароль." << endl;
+    cout << "ГЌГҐГўГҐГ°Г­Г®ГҐ ГЁГ¬Гї ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«Гї ГЁГ«ГЁ ГЇГ Г°Г®Г«Гј." << endl;
     system("pause");
     return false;
 }
@@ -147,12 +147,12 @@ inline void saveTasksToFile(const vector<ToDoItem>& todoList, const string& user
             file << item.id << ";" << item.title << ";" << item.dueDate << ";" << item.description << ";" << (item.isDone ? "1" : "0") << "\n";
         }
         file.close();
-        cout << "Задачи успешно сохранены." << endl;
-        cout << "Нажмите Enter для продолжения...";
+        cout << "Г‡Г Г¤Г Г·ГЁ ГіГ±ГЇГҐГёГ­Г® Г±Г®ГµГ°Г Г­ГҐГ­Г»." << endl;
+        cout << "ГЌГ Г¦Г¬ГЁГІГҐ Enter Г¤Г«Гї ГЇГ°Г®Г¤Г®Г«Г¦ГҐГ­ГЁГї...";
         cin.get();
     }
     else {
-        cerr << "Ошибка при сохранении задач." << endl;
+        cerr << "ГЋГёГЁГЎГЄГ  ГЇГ°ГЁ Г±Г®ГµГ°Г Г­ГҐГ­ГЁГЁ Г§Г Г¤Г Г·." << endl;
     }
 }
 
@@ -168,21 +168,21 @@ inline int showMenu() {
     int choice;
     clearScreen();
     cout << "--- ToDo List ---" << endl;
-    cout << "1. Добавить задачу" << endl;
-    cout << "2. Показать список задач" << endl;
-    cout << "3. Выполнить задачу" << endl;
-    cout << "4. Редактировать задачу" << endl;
-    cout << "5. Удалить задачу" << endl;
-    cout << "6. Сохранить изменения" << endl;
-    cout << "7. Загрузить задачи из файла" << endl;
-    cout << "8. Выход" << "\n\n";
-    cout << "ВНИМАНИЕ, ПЕРЕД ВЫХОДОМ НЕ ЗАБУДЬТЕ СОХРАНИТЬ ИЗМЕНЕНИЯ!!! 0" << "\n\n";
-    cout << "Введите ваш выбор: ";
+    cout << "1. Г„Г®ГЎГ ГўГЁГІГј Г§Г Г¤Г Г·Гі" << endl;
+    cout << "2. ГЏГ®ГЄГ Г§Г ГІГј Г±ГЇГЁГ±Г®ГЄ Г§Г Г¤Г Г·" << endl;
+    cout << "3. Г‚Г»ГЇГ®Г«Г­ГЁГІГј Г§Г Г¤Г Г·Гі" << endl;
+    cout << "4. ГђГҐГ¤Г ГЄГІГЁГ°Г®ГўГ ГІГј Г§Г Г¤Г Г·Гі" << endl;
+    cout << "5. Г“Г¤Г Г«ГЁГІГј Г§Г Г¤Г Г·Гі" << endl;
+    cout << "6. Г‘Г®ГµГ°Г Г­ГЁГІГј ГЁГ§Г¬ГҐГ­ГҐГ­ГЁГї" << endl;
+    cout << "7. Г‡Г ГЈГ°ГіГ§ГЁГІГј Г§Г Г¤Г Г·ГЁ ГЁГ§ ГґГ Г©Г«Г " << endl;
+    cout << "8. Г‚Г»ГµГ®Г¤" << "\n\n";
+    cout << "Г‚ГЌГ€ГЊГЂГЌГ€Г…, ГЏГ…ГђГ…Г„ Г‚Г›Г•ГЋГ„ГЋГЊ ГЌГ… Г‡ГЂГЃГ“Г„ГњГ’Г… Г‘ГЋГ•ГђГЂГЌГ€Г’Гњ Г€Г‡ГЊГ…ГЌГ…ГЌГ€Гџ!!!" << "\n\n";
+    cout << "Г‚ГўГҐГ¤ГЁГІГҐ ГўГ Гё ГўГ»ГЎГ®Г°: ";
     cin >> choice;
     while (cin.fail() || choice < 1 || choice > 8) {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Неверный ввод. Пожалуйста, введите число от 1 до 8: ";
+        cout << "ГЌГҐГўГҐГ°Г­Г»Г© ГўГўГ®Г¤. ГЏГ®Г¦Г Г«ГіГ©Г±ГІГ , ГўГўГҐГ¤ГЁГІГҐ Г·ГЁГ±Г«Г® Г®ГІ 1 Г¤Г® 8: ";
         cin >> choice;
     }
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -190,67 +190,67 @@ inline int showMenu() {
 }
 inline void addTask(vector<ToDoItem>& todoList, int& nextId) {
     ToDoItem newItem;
-    newItem.id = nextId++; // Присваиваем уникальный ID
-    cout << "Введите название задачи: ";
+    newItem.id = nextId++; // ГЏГ°ГЁГ±ГўГ ГЁГўГ ГҐГ¬ ГіГ­ГЁГЄГ Г«ГјГ­Г»Г© ID
+    cout << "Г‚ГўГҐГ¤ГЁГІГҐ Г­Г Г§ГўГ Г­ГЁГҐ Г§Г Г¤Г Г·ГЁ: ";
     getline(cin, newItem.title);
-    cout << "Введите дату выполнения (YYYY-MM-DD): ";
+    cout << "Г‚ГўГҐГ¤ГЁГІГҐ Г¤Г ГІГі ГўГ»ГЇГ®Г«Г­ГҐГ­ГЁГї (YYYY-MM-DD): ";
     getline(cin, newItem.dueDate);
-    cout << "Введите описание задачи: ";
+    cout << "Г‚ГўГҐГ¤ГЁГІГҐ Г®ГЇГЁГ±Г Г­ГЁГҐ Г§Г Г¤Г Г·ГЁ: ";
     getline(cin, newItem.description);
-    newItem.isDone = false; // По умолчанию задача не выполнена
-    todoList.push_back(newItem); // Добавляем новую задачу в список
-    cout << "Задача добавлена!" << endl;
-    cout << "Нажмите Enter для продолжения...";
+    newItem.isDone = false; // ГЏГ® ГіГ¬Г®Г«Г·Г Г­ГЁГѕ Г§Г Г¤Г Г·Г  Г­ГҐ ГўГ»ГЇГ®Г«Г­ГҐГ­Г 
+    todoList.push_back(newItem); // Г„Г®ГЎГ ГўГ«ГїГҐГ¬ Г­Г®ГўГіГѕ Г§Г Г¤Г Г·Гі Гў Г±ГЇГЁГ±Г®ГЄ
+    cout << "Г‡Г Г¤Г Г·Г  Г¤Г®ГЎГ ГўГ«ГҐГ­Г !" << endl;
+    cout << "ГЌГ Г¦Г¬ГЁГІГҐ Enter Г¤Г«Гї ГЇГ°Г®Г¤Г®Г«Г¦ГҐГ­ГЁГї...";
     cin.get();
 }
 inline void showTasks(const vector<ToDoItem>& todoList) {
     clearScreen();
-    cout << "--- Список задач ---" << endl;
+    cout << "--- Г‘ГЇГЁГ±Г®ГЄ Г§Г Г¤Г Г· ---" << endl;
     if (todoList.empty()) {
-        cout << "Список задач пуст." << endl;
+        cout << "Г‘ГЇГЁГ±Г®ГЄ Г§Г Г¤Г Г· ГЇГіГ±ГІ." << endl;
     }
     else {
         cout << left << setw(5) << "ID"
-            << setw(20) << "Название"
-            << setw(12) << "Дата"
-            << setw(14) << "Выполнено"
-            << setw(12) << "Описание"
+            << setw(20) << "ГЌГ Г§ГўГ Г­ГЁГҐ"
+            << setw(12) << "Г„Г ГІГ "
+            << setw(14) << "Г‚Г»ГЇГ®Г«Г­ГҐГ­Г®"
+            << setw(12) << "ГЋГЇГЁГ±Г Г­ГЁГҐ"
             << endl;
         cout << "-----------------------------------------------------------------------------------------------------------------------------------" << endl;
         for (const auto& item : todoList) {
             cout << left << setw(5) << item.id
                 << setw(20) << item.title
                 << setw(12) << item.dueDate
-                << setw(14) << (item.isDone ? "Да" : "Нет")
+                << setw(14) << (item.isDone ? "Г„Г " : "ГЌГҐГІ")
                 << setw(12) << item.description
                 << endl;
         }
     }
-    cout << "Нажмите Enter для продолжения...";
+    cout << "ГЌГ Г¦Г¬ГЁГІГҐ Enter Г¤Г«Гї ГЇГ°Г®Г¤Г®Г«Г¦ГҐГ­ГЁГї...";
     cin.get();
 }
 inline void markTaskAsDone(vector<ToDoItem>& todoList) {
     int id;
-    cout << "Введите ID задачи для выполнения: ";
+    cout << "Г‚ГўГҐГ¤ГЁГІГҐ ID Г§Г Г¤Г Г·ГЁ Г¤Г«Гї ГўГ»ГЇГ®Г«Г­ГҐГ­ГЁГї: ";
     cin >> id;
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
     for (auto& item : todoList) {
         if (item.id == id) {
-            item.isDone = !item.isDone; // Инвертируем статус
-            cout << "Статус задачи изменен." << endl;
-            cout << "Нажмите Enter для продолжения...";
+            item.isDone = !item.isDone; // Г€Г­ГўГҐГ°ГІГЁГ°ГіГҐГ¬ Г±ГІГ ГІГіГ±
+            cout << "Г‘ГІГ ГІГіГ± Г§Г Г¤Г Г·ГЁ ГЁГ§Г¬ГҐГ­ГҐГ­." << endl;
+            cout << "ГЌГ Г¦Г¬ГЁГІГҐ Enter Г¤Г«Гї ГЇГ°Г®Г¤Г®Г«Г¦ГҐГ­ГЁГї...";
             cin.get();
             return;
         }
     }
-    cout << "Задача с указанным ID не найдена." << endl;
-    cout << "Нажмите Enter для продолжения...";
+    cout << "Г‡Г Г¤Г Г·Г  Г± ГіГЄГ Г§Г Г­Г­Г»Г¬ ID Г­ГҐ Г­Г Г©Г¤ГҐГ­Г ." << endl;
+    cout << "ГЌГ Г¦Г¬ГЁГІГҐ Enter Г¤Г«Гї ГЇГ°Г®Г¤Г®Г«Г¦ГҐГ­ГЁГї...";
     cin.get();
 }
 inline void editTask(vector<ToDoItem>& todoList) {
     int id;
-    cout << "Введите ID задачи для редактирования: ";
+    cout << "Г‚ГўГҐГ¤ГЁГІГҐ ID Г§Г Г¤Г Г·ГЁ Г¤Г«Гї Г°ГҐГ¤Г ГЄГІГЁГ°Г®ГўГ Г­ГЁГї: ";
     cin >> id;
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     string title;
@@ -258,57 +258,57 @@ inline void editTask(vector<ToDoItem>& todoList) {
     string description;
     for (auto& item : todoList) {
         if (item.id == id) {
-            cout << "Введите новое название задачи (оставьте пустым, чтобы не изменять): ";
+            cout << "Г‚ГўГҐГ¤ГЁГІГҐ Г­Г®ГўГ®ГҐ Г­Г Г§ГўГ Г­ГЁГҐ Г§Г Г¤Г Г·ГЁ (Г®Г±ГІГ ГўГјГІГҐ ГЇГіГ±ГІГ»Г¬, Г·ГІГ®ГЎГ» Г­ГҐ ГЁГ§Г¬ГҐГ­ГїГІГј): ";
             getline(cin, title);
             if (title.empty()) {
-                cout << "Название оставлено без изменений." << endl;
+                cout << "ГЌГ Г§ГўГ Г­ГЁГҐ Г®Г±ГІГ ГўГ«ГҐГ­Г® ГЎГҐГ§ ГЁГ§Г¬ГҐГ­ГҐГ­ГЁГ©." << endl;
             }
             else {
                 item.title = title;
             }
-            cout << "Введите новую дату выполнения (YYYY-MM-DD, оставьте пустым, чтобы не изменять): ";
+            cout << "Г‚ГўГҐГ¤ГЁГІГҐ Г­Г®ГўГіГѕ Г¤Г ГІГі ГўГ»ГЇГ®Г«Г­ГҐГ­ГЁГї (YYYY-MM-DD, Г®Г±ГІГ ГўГјГІГҐ ГЇГіГ±ГІГ»Г¬, Г·ГІГ®ГЎГ» Г­ГҐ ГЁГ§Г¬ГҐГ­ГїГІГј): ";
             getline(cin, dueDate);
             if (dueDate.empty()) {
-                cout << "Дата выполнения оставлена без изменений." << endl;
+                cout << "Г„Г ГІГ  ГўГ»ГЇГ®Г«Г­ГҐГ­ГЁГї Г®Г±ГІГ ГўГ«ГҐГ­Г  ГЎГҐГ§ ГЁГ§Г¬ГҐГ­ГҐГ­ГЁГ©." << endl;
             }
             else {
                 item.dueDate = dueDate;
             }
-            cout << "Введите новое описание задачи (оставьте пустым, чтобы не изменять): ";
+            cout << "Г‚ГўГҐГ¤ГЁГІГҐ Г­Г®ГўГ®ГҐ Г®ГЇГЁГ±Г Г­ГЁГҐ Г§Г Г¤Г Г·ГЁ (Г®Г±ГІГ ГўГјГІГҐ ГЇГіГ±ГІГ»Г¬, Г·ГІГ®ГЎГ» Г­ГҐ ГЁГ§Г¬ГҐГ­ГїГІГј): ";
             getline(cin, description);
             if (description.empty()) {
-                cout << "Описание оставлено без изменений." << endl;
+                cout << "ГЋГЇГЁГ±Г Г­ГЁГҐ Г®Г±ГІГ ГўГ«ГҐГ­Г® ГЎГҐГ§ ГЁГ§Г¬ГҐГ­ГҐГ­ГЁГ©." << endl;
             }
             else {
                 item.description = description;
             }
-            cout << "Задача отредактирована!" << endl;
-            cout << "Нажмите Enter для продолжения...";
+            cout << "Г‡Г Г¤Г Г·Г  Г®ГІГ°ГҐГ¤Г ГЄГІГЁГ°Г®ГўГ Г­Г !" << endl;
+            cout << "ГЌГ Г¦Г¬ГЁГІГҐ Enter Г¤Г«Гї ГЇГ°Г®Г¤Г®Г«Г¦ГҐГ­ГЁГї...";
             cin.get();
             return;
         }
     }
-    cout << "Задача с указанным ID не найдена." << endl;
-    cout << "Нажмите Enter для продолжения...";
+    cout << "Г‡Г Г¤Г Г·Г  Г± ГіГЄГ Г§Г Г­Г­Г»Г¬ ID Г­ГҐ Г­Г Г©Г¤ГҐГ­Г ." << endl;
+    cout << "ГЌГ Г¦Г¬ГЁГІГҐ Enter Г¤Г«Гї ГЇГ°Г®Г¤Г®Г«Г¦ГҐГ­ГЁГї...";
     cin.get();
 }
 inline void deleteTask(vector<ToDoItem>& todoList) {
     int id;
-    cout << "Введите ID задачи для удаления: ";
+    cout << "Г‚ГўГҐГ¤ГЁГІГҐ ID Г§Г Г¤Г Г·ГЁ Г¤Г«Гї ГіГ¤Г Г«ГҐГ­ГЁГї: ";
     cin >> id;
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
     for (size_t i = 0; i < todoList.size(); ++i) {
         if (todoList[i].id == id) {
             todoList.erase(todoList.begin() + i);
-            cout << "Задача удалена." << endl;
-            cout << "Нажмите Enter для продолжения...";
+            cout << "Г‡Г Г¤Г Г·Г  ГіГ¤Г Г«ГҐГ­Г ." << endl;
+            cout << "ГЌГ Г¦Г¬ГЁГІГҐ Enter Г¤Г«Гї ГЇГ°Г®Г¤Г®Г«Г¦ГҐГ­ГЁГї...";
             cin.get();
             return;
         }
     }
-    cout << "Задача с указанным ID не найдена." << endl;
-    cout << "Нажмите Enter для продолжения...";
+    cout << "Г‡Г Г¤Г Г·Г  Г± ГіГЄГ Г§Г Г­Г­Г»Г¬ ID Г­ГҐ Г­Г Г©Г¤ГҐГ­Г ." << endl;
+    cout << "ГЌГ Г¦Г¬ГЁГІГҐ Enter Г¤Г«Гї ГЇГ°Г®Г¤Г®Г«Г¦ГҐГ­ГЁГї...";
     cin.get();
 }
 inline void saveTasksToFile(const vector<ToDoItem>& todoList) {
@@ -318,12 +318,12 @@ inline void saveTasksToFile(const vector<ToDoItem>& todoList) {
             file << item.id << ";" << item.title << ";" << item.dueDate << ";" << item.description << ";" << item.isDone << endl;
         }
         file.close();
-        cout << "Задачи успешно сохранены в файл." << endl;
-        cout << "Нажмите Enter для продолжения...";
+        cout << "Г‡Г Г¤Г Г·ГЁ ГіГ±ГЇГҐГёГ­Г® Г±Г®ГµГ°Г Г­ГҐГ­Г» Гў ГґГ Г©Г«." << endl;
+        cout << "ГЌГ Г¦Г¬ГЁГІГҐ Enter Г¤Г«Гї ГЇГ°Г®Г¤Г®Г«Г¦ГҐГ­ГЁГї...";
         cin.get();
     }
     else {
-        cerr << "Ошибка: Не удалось открыть файл для сохранения." << endl;
+        cerr << "ГЋГёГЁГЎГЄГ : ГЌГҐ ГіГ¤Г Г«Г®Г±Гј Г®ГІГЄГ°Г»ГІГј ГґГ Г©Г« Г¤Г«Гї Г±Г®ГµГ°Г Г­ГҐГ­ГЁГї." << endl;
     }
 }
 inline void loadTasksFromFile(vector<ToDoItem>& todoList, int& nextId) {
@@ -341,17 +341,17 @@ inline void loadTasksFromFile(vector<ToDoItem>& todoList, int& nextId) {
             getline(ss, item.dueDate, ';');
             getline(ss, item.description, ';');
             getline(ss, token, ';');
-            item.isDone = (token == "1" || token == "true"); // Преобразование строки в bool
+            item.isDone = (token == "1" || token == "true"); // ГЏГ°ГҐГ®ГЎГ°Г Г§Г®ГўГ Г­ГЁГҐ Г±ГІГ°Г®ГЄГЁ Гў bool
 
             todoList.push_back(item);
-            nextId = max(nextId, item.id + 1); // Обновляем nextId
+            nextId = max(nextId, item.id + 1); // ГЋГЎГ­Г®ГўГ«ГїГҐГ¬ nextId
         }
         file.close();
-        cout << "Задачи успешно загружены из файла." << endl;
-        cout << "Нажмите Enter для продолжения...";
+        cout << "Г‡Г Г¤Г Г·ГЁ ГіГ±ГЇГҐГёГ­Г® Г§Г ГЈГ°ГіГ¦ГҐГ­Г» ГЁГ§ ГґГ Г©Г«Г ." << endl;
+        cout << "ГЌГ Г¦Г¬ГЁГІГҐ Enter Г¤Г«Гї ГЇГ°Г®Г¤Г®Г«Г¦ГҐГ­ГЁГї...";
         cin.get();
     }
     else {
-        cerr << "Ошибка: Не удалось открыть файл для загрузки." << endl;
+        cerr << "ГЋГёГЁГЎГЄГ : ГЌГҐ ГіГ¤Г Г«Г®Г±Гј Г®ГІГЄГ°Г»ГІГј ГґГ Г©Г« Г¤Г«Гї Г§Г ГЈГ°ГіГ§ГЄГЁ." << endl;
     }
 }
