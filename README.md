@@ -21,17 +21,11 @@ A simple console-based ToDo list application written in C++.
 ## Build Instructions
 
 1.  Save the code into three files: `main.cpp`, `function.h`, `function.cpp`
-2.  Compile the code using a C++ compiler:
-    ```bash
-    g++ main.cpp -o todo_list
-    ```
+2.  Compile the code using a C++ compiler.
 
 ## Usage
 
-1.  Run the executable:
-    ```bash
-    ./todo_list
-    ```
+1.  Run the executable.
 2.  Follow the on-screen instructions to add, view, edit, and manage your ToDo list.
 
 ## File Structure
@@ -39,8 +33,7 @@ A simple console-based ToDo list application written in C++.
 The project is organized into the following files:
 
 *   `main.cpp`: Contains the `main` function and the main application logic.
-*   `function.h`: Contains function prototypes.
-*   `function.cpp`: Contains function implementations.
+*   `function.hpp`: Contains function prototypes and implementations.
 
 ## Version Control
 
