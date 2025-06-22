@@ -20,7 +20,7 @@ A simple console-based ToDo list application written in C++.
 
 ## Build Instructions
 
-1.  Save the code into three files: `main.cpp`, `function.h`, `function.cpp`
+1.  Save the code into three files: `ConsoleApplication34.cpp`, `Source.hpp`
 2.  Compile the code using a C++ compiler.
 
 ## Usage
@@ -32,8 +32,8 @@ A simple console-based ToDo list application written in C++.
 
 The project is organized into the following files:
 
-*   `main.cpp`: Contains the `main` function and the main application logic.
-*   `function.hpp`: Contains function prototypes and implementations.
+*   `ConsoleApplication34.cpp`: Contains the `main` function and the main application logic.
+*   `Source.hpp`: Contains function prototypes and implementations.
 
 ## Version Control
 
