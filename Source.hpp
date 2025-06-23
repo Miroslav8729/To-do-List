@@ -4,9 +4,9 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <iomanip> // Äëÿ ôîðìàòèðîâàíèÿ âûâîäà
-#include <limits> // Äëÿ std::numeric_limits
-#include <sstream> // Äëÿ îáðàáîòêè ñòðîê
+#include <iomanip> // Для форматирования вывода
+#include <limits> // Для std::numeric_limits
+#include <sstream> // Для обработки строк
 
 using namespace std;
 
@@ -23,7 +23,7 @@ struct ToDoItem {
     bool isDone;
 };
 
-// Îáúÿâëåíèå ôóíêöèé
+// Объявление функций
 bool registerUser(vector<User>& users);
 bool loginUser(const vector<User>& users, string& currentUsername, User*& currentUser);
 void loadUsersFromFile(vector<User>& users);
@@ -31,59 +31,58 @@ void saveUsersToFile(const vector<User>& users);
 void loadTasksFromFile(vector<ToDoItem>& todoList, int& nextId, const string& username);
 void saveTasksToFile(const vector<ToDoItem>& todoList, const string& username);
 inline void clearScreen();
-inline int showMenu();
 
 inline bool registerUser(vector<User>& users) {
     string username, password;
-    cout << "Ââåäèòå èìÿ ïîëüçîâàòåëÿ: ";
+    cout << "Введите имя пользователя: ";
     getline(cin, username);
 
-    // Ïðîâåðêà óíèêàëüíîñòè
+    // Проверка уникальности
     for (const auto& u : users) {
         if (u.username == username) {
-            cout << "Ýòî èìÿ ïîëüçîâàòåëÿ óæå çàíÿòî." << endl;
+            cout << "Это имя пользователя уже занято." << endl;
             system("pause");
             return false;
         }
     }
 
-    cout << "Ââåäèòå ïàðîëü: ";
+    cout << "Введите пароль: ";
     getline(cin, password);
 
     User newUser{ username, password };
     users.push_back(newUser);
     saveUsersToFile(users);
-    cout << "Ðåãèñòðàöèÿ ïðîøëà óñïåøíî!" << endl;
+    cout << "Регистрация прошла успешно!" << endl;
     system("pause");
     return true;
 }
 
 inline bool loginUser(const vector<User>& users, string& currentUsername, User*& currentUser) {
     string username, password;
-    cout << "Ââåäèòå èìÿ ïîëüçîâàòåëÿ: ";
+    cout << "Введите имя пользователя: ";
     getline(cin, username);
-    cout << "Ââåäèòå ïàðîëü: ";
+    cout << "Введите пароль: ";
     getline(cin, password);
 
     for (const auto& u : users) {
         if (u.username == username && u.password == password) {
             currentUsername = username;
-            // Ïûòàåìñÿ íàéòè ïîëüçîâàòåëÿ äëÿ äîñòóïà ê äàííûì
-            // Íî ïîñêîëüêó ó íàñ åñòü âåêòîð ïîëüçîâàòåëåé, ìîæíî íàéòè ïî èìåíè
-            // è ïåðåäàòü óêàçàòåëü
-            // Äëÿ ýòîãî ëó÷øå ïîëó÷èòü åãî òóò
+            // Пытаемся найти пользователя для доступа к данным
+            // Но поскольку у нас есть вектор пользователей, можно найти по имени
+            // и передать указатель
+            // Для этого лучше получить его тут
             break;
         }
     }
-    // Ïîêà èùåì ïîçæå. Ìîæíî ñäåëàòü òàê:
-    for (auto& u : const_cast<vector<User>&>(users)) { // íå î÷åíü êîððåêòíî, íî äîïóñòèìî äëÿ ïðèìåðà
+    // Пока ищем позже. Можно сделать так:
+    for (auto& u : const_cast<vector<User>&>(users)) { // не очень корректно, но допустимо для примера
         if (u.username == username && u.password == password) {
             currentUser = &u;
-            cout << "Âõîä âûïîëíåí óñïåøíî! Äîáðî ïîæàëîâàòü, " << currentUser->username << "." << endl;
+            cout << "Вход выполнен успешно! Добро пожаловать, " << currentUser->username << "." << endl;
             return true;
         }
     }
-    cout << "Íåâåðíîå èìÿ ïîëüçîâàòåëÿ èëè ïàðîëü." << endl;
+    cout << "Неверное имя пользователя или пароль." << endl;
     system("pause");
     return false;
 }
@@ -147,12 +146,12 @@ inline void saveTasksToFile(const vector<ToDoItem>& todoList, const string& user
             file << item.id << ";" << item.title << ";" << item.dueDate << ";" << item.description << ";" << (item.isDone ? "1" : "0") << "\n";
         }
         file.close();
-        cout << "Çàäà÷è óñïåøíî ñîõðàíåíû." << endl;
-        cout << "Íàæìèòå Enter äëÿ ïðîäîëæåíèÿ...";
+        cout << "Задачи успешно сохранены." << endl;
+        cout << "Нажмите Enter для продолжения...";
         cin.get();
     }
     else {
-        cerr << "Îøèáêà ïðè ñîõðàíåíèè çàäà÷." << endl;
+        cerr << "Ошибка при сохранении задач." << endl;
     }
 }
 
@@ -164,93 +163,68 @@ inline void clearScreen() {
 #endif
 }
 
-inline int showMenu() {
-    int choice;
-    clearScreen();
-    cout << "--- ToDo List ---" << endl;
-    cout << "1. Äîáàâèòü çàäà÷ó" << endl;
-    cout << "2. Ïîêàçàòü ñïèñîê çàäà÷" << endl;
-    cout << "3. Âûïîëíèòü çàäà÷ó" << endl;
-    cout << "4. Ðåäàêòèðîâàòü çàäà÷ó" << endl;
-    cout << "5. Óäàëèòü çàäà÷ó" << endl;
-    cout << "6. Ñîõðàíèòü èçìåíåíèÿ" << endl;
-    cout << "7. Çàãðóçèòü çàäà÷è èç ôàéëà" << endl;
-    cout << "8. Âûõîä" << "\n\n";
-    cout << "ÂÍÈÌÀÍÈÅ, ÏÅÐÅÄ ÂÛÕÎÄÎÌ ÍÅ ÇÀÁÓÄÜÒÅ ÑÎÕÐÀÍÈÒÜ ÈÇÌÅÍÅÍÈß!!!" << "\n\n";
-    cout << "Ââåäèòå âàø âûáîð: ";
-    cin >> choice;
-    while (cin.fail() || choice < 1 || choice > 8) {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Íåâåðíûé ââîä. Ïîæàëóéñòà, ââåäèòå ÷èñëî îò 1 äî 8: ";
-        cin >> choice;
-    }
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    return choice;
-}
+
 inline void addTask(vector<ToDoItem>& todoList, int& nextId) {
     ToDoItem newItem;
-    newItem.id = nextId++; // Ïðèñâàèâàåì óíèêàëüíûé ID
-    cout << "Ââåäèòå íàçâàíèå çàäà÷è: ";
+    newItem.id = nextId++; // Присваиваем уникальный ID
+    cout << "Введите название задачи: ";
     getline(cin, newItem.title);
-    cout << "Ââåäèòå äàòó âûïîëíåíèÿ (YYYY-MM-DD): ";
+    cout << "Введите дату выполнения (YYYY-MM-DD): ";
     getline(cin, newItem.dueDate);
-    cout << "Ââåäèòå îïèñàíèå çàäà÷è: ";
+    cout << "Введите описание задачи: ";
     getline(cin, newItem.description);
-    newItem.isDone = false; // Ïî óìîë÷àíèþ çàäà÷à íå âûïîëíåíà
-    todoList.push_back(newItem); // Äîáàâëÿåì íîâóþ çàäà÷ó â ñïèñîê
-    cout << "Çàäà÷à äîáàâëåíà!" << endl;
-    cout << "Íàæìèòå Enter äëÿ ïðîäîëæåíèÿ...";
-    cin.get();
+    newItem.isDone = false; // По умолчанию задача не выполнена
+    todoList.push_back(newItem); // Добавляем новую задачу в список
+    cout << "Задача добавлена!" << endl;
 }
 inline void showTasks(const vector<ToDoItem>& todoList) {
     clearScreen();
-    cout << "--- Ñïèñîê çàäà÷ ---" << endl;
+    cout << "--- Список задач ---" << endl;
     if (todoList.empty()) {
-        cout << "Ñïèñîê çàäà÷ ïóñò." << endl;
+        cout << "Список задач пуст." << endl;
     }
     else {
         cout << left << setw(5) << "ID"
-            << setw(20) << "Íàçâàíèå"
-            << setw(12) << "Äàòà"
-            << setw(14) << "Âûïîëíåíî"
-            << setw(12) << "Îïèñàíèå"
+            << setw(20) << "Название"
+            << setw(12) << "Дата"
+            << setw(14) << "Выполнено"
+            << setw(12) << "Описание"
             << endl;
         cout << "-----------------------------------------------------------------------------------------------------------------------------------" << endl;
         for (const auto& item : todoList) {
             cout << left << setw(5) << item.id
                 << setw(20) << item.title
                 << setw(12) << item.dueDate
-                << setw(14) << (item.isDone ? "Äà" : "Íåò")
+                << setw(14) << (item.isDone ? "Да" : "Нет")
                 << setw(12) << item.description
                 << endl;
         }
     }
-    cout << "Íàæìèòå Enter äëÿ ïðîäîëæåíèÿ...";
+    cout << "Нажмите Enter для продолжения...";
     cin.get();
 }
 inline void markTaskAsDone(vector<ToDoItem>& todoList) {
     int id;
-    cout << "Ââåäèòå ID çàäà÷è äëÿ âûïîëíåíèÿ: ";
+    cout << "Введите ID задачи для выполнения: ";
     cin >> id;
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
     for (auto& item : todoList) {
         if (item.id == id) {
-            item.isDone = !item.isDone; // Èíâåðòèðóåì ñòàòóñ
-            cout << "Ñòàòóñ çàäà÷è èçìåíåí." << endl;
-            cout << "Íàæìèòå Enter äëÿ ïðîäîëæåíèÿ...";
+            item.isDone = !item.isDone; // Инвертируем статус
+            cout << "Статус задачи изменен." << endl;
+            cout << "Нажмите Enter для продолжения...";
             cin.get();
             return;
         }
     }
-    cout << "Çàäà÷à ñ óêàçàííûì ID íå íàéäåíà." << endl;
-    cout << "Íàæìèòå Enter äëÿ ïðîäîëæåíèÿ...";
+    cout << "Задача с указанным ID не найдена." << endl;
+    cout << "Нажмите Enter для продолжения...";
     cin.get();
 }
 inline void editTask(vector<ToDoItem>& todoList) {
     int id;
-    cout << "Ââåäèòå ID çàäà÷è äëÿ ðåäàêòèðîâàíèÿ: ";
+    cout << "Введите ID задачи для редактирования: ";
     cin >> id;
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     string title;
@@ -258,57 +232,57 @@ inline void editTask(vector<ToDoItem>& todoList) {
     string description;
     for (auto& item : todoList) {
         if (item.id == id) {
-            cout << "Ââåäèòå íîâîå íàçâàíèå çàäà÷è (îñòàâüòå ïóñòûì, ÷òîáû íå èçìåíÿòü): ";
+            cout << "Введите новое название задачи (оставьте пустым, чтобы не изменять): ";
             getline(cin, title);
             if (title.empty()) {
-                cout << "Íàçâàíèå îñòàâëåíî áåç èçìåíåíèé." << endl;
+                cout << "Название оставлено без изменений." << endl;
             }
             else {
                 item.title = title;
             }
-            cout << "Ââåäèòå íîâóþ äàòó âûïîëíåíèÿ (YYYY-MM-DD, îñòàâüòå ïóñòûì, ÷òîáû íå èçìåíÿòü): ";
+            cout << "Введите новую дату выполнения (YYYY-MM-DD, оставьте пустым, чтобы не изменять): ";
             getline(cin, dueDate);
             if (dueDate.empty()) {
-                cout << "Äàòà âûïîëíåíèÿ îñòàâëåíà áåç èçìåíåíèé." << endl;
+                cout << "Дата выполнения оставлена без изменений." << endl;
             }
             else {
                 item.dueDate = dueDate;
             }
-            cout << "Ââåäèòå íîâîå îïèñàíèå çàäà÷è (îñòàâüòå ïóñòûì, ÷òîáû íå èçìåíÿòü): ";
+            cout << "Введите новое описание задачи (оставьте пустым, чтобы не изменять): ";
             getline(cin, description);
             if (description.empty()) {
-                cout << "Îïèñàíèå îñòàâëåíî áåç èçìåíåíèé." << endl;
+                cout << "Описание оставлено без изменений." << endl;
             }
             else {
                 item.description = description;
             }
-            cout << "Çàäà÷à îòðåäàêòèðîâàíà!" << endl;
-            cout << "Íàæìèòå Enter äëÿ ïðîäîëæåíèÿ...";
+            cout << "Задача отредактирована!" << endl;
+            cout << "Нажмите Enter для продолжения...";
             cin.get();
             return;
         }
     }
-    cout << "Çàäà÷à ñ óêàçàííûì ID íå íàéäåíà." << endl;
-    cout << "Íàæìèòå Enter äëÿ ïðîäîëæåíèÿ...";
+    cout << "Задача с указанным ID не найдена." << endl;
+    cout << "Нажмите Enter для продолжения...";
     cin.get();
 }
 inline void deleteTask(vector<ToDoItem>& todoList) {
     int id;
-    cout << "Ââåäèòå ID çàäà÷è äëÿ óäàëåíèÿ: ";
+    cout << "Введите ID задачи для удаления: ";
     cin >> id;
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
     for (size_t i = 0; i < todoList.size(); ++i) {
         if (todoList[i].id == id) {
             todoList.erase(todoList.begin() + i);
-            cout << "Çàäà÷à óäàëåíà." << endl;
-            cout << "Íàæìèòå Enter äëÿ ïðîäîëæåíèÿ...";
+            cout << "Задача удалена." << endl;
+            cout << "Нажмите Enter для продолжения...";
             cin.get();
             return;
         }
     }
-    cout << "Çàäà÷à ñ óêàçàííûì ID íå íàéäåíà." << endl;
-    cout << "Íàæìèòå Enter äëÿ ïðîäîëæåíèÿ...";
+    cout << "Задача с указанным ID не найдена." << endl;
+    cout << "Нажмите Enter для продолжения...";
     cin.get();
 }
 inline void saveTasksToFile(const vector<ToDoItem>& todoList) {
@@ -318,12 +292,12 @@ inline void saveTasksToFile(const vector<ToDoItem>& todoList) {
             file << item.id << ";" << item.title << ";" << item.dueDate << ";" << item.description << ";" << item.isDone << endl;
         }
         file.close();
-        cout << "Çàäà÷è óñïåøíî ñîõðàíåíû â ôàéë." << endl;
-        cout << "Íàæìèòå Enter äëÿ ïðîäîëæåíèÿ...";
+        cout << "Задачи успешно сохранены в файл." << endl;
+        cout << "Нажмите Enter для продолжения...";
         cin.get();
     }
     else {
-        cerr << "Îøèáêà: Íå óäàëîñü îòêðûòü ôàéë äëÿ ñîõðàíåíèÿ." << endl;
+        cerr << "Ошибка: Не удалось открыть файл для сохранения." << endl;
     }
 }
 inline void loadTasksFromFile(vector<ToDoItem>& todoList, int& nextId) {
@@ -341,17 +315,112 @@ inline void loadTasksFromFile(vector<ToDoItem>& todoList, int& nextId) {
             getline(ss, item.dueDate, ';');
             getline(ss, item.description, ';');
             getline(ss, token, ';');
-            item.isDone = (token == "1" || token == "true"); // Ïðåîáðàçîâàíèå ñòðîêè â bool
+            item.isDone = (token == "1" || token == "true"); // Преобразование строки в bool
 
             todoList.push_back(item);
-            nextId = max(nextId, item.id + 1); // Îáíîâëÿåì nextId
+            nextId = max(nextId, item.id + 1); // Обновляем nextId
         }
         file.close();
-        cout << "Çàäà÷è óñïåøíî çàãðóæåíû èç ôàéëà." << endl;
-        cout << "Íàæìèòå Enter äëÿ ïðîäîëæåíèÿ...";
+        cout << "Задачи успешно загружены из файла." << endl;
+        cout << "Нажмите Enter для продолжения...";
         cin.get();
     }
     else {
-        cerr << "Îøèáêà: Íå óäàëîñü îòêðûòü ôàéë äëÿ çàãðóçêè." << endl;
+        cerr << "Ошибка: Не удалось открыть файл для загрузки." << endl;
     }
+}
+inline int showRenderMenu() {
+    vector<string> options = {
+        "Добавить задачу",
+        "Показать список задач",
+        "Выполнить задачу",
+        "Редактировать задачу",
+        "Удалить задачу",
+        "Сохранить изменения",
+        "Загрузить задачи из файла",
+        "Выход"
+    };
+    const int width = 80;
+    // Рамка с заголовком
+    cout << "+" << string(width - 2, '-') << "+" << endl;
+    cout << "| " << left << setw(width - 4) << "Меню" << " |" << endl;
+    cout << "+" << string(width - 2, '-') << "+" << endl;
+
+    for (size_t i = 0; i < options.size(); ++i) {
+        cout << "| " << left << setw(width - 4)
+            << (to_string(i + 1) + ". " + options[i]) << " |" << endl;
+    }
+    cout << "+" << string(width - 2, '-') << "+" << endl;
+
+    int choice;
+    cout << "Введите ваш выбор (1-" << options.size() << "): ";
+    cin >> choice;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    while (cin.fail() || choice < 1 || choice > options.size()) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Некорректный ввод. Попробуйте снова: ";
+        cin >> choice;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+    return choice;
+}
+vector<string> splitString(const string& str, size_t max_length) {
+    vector<string> lines;
+    size_t start = 0;
+    while (start < str.size()) {
+        size_t len = min(max_length, str.size() - start);
+        lines.push_back(str.substr(start, len));
+        start += len;
+    }
+    return lines;
+}
+
+void renderTaskTable(const vector<ToDoItem>& todoList) {
+    const int widthID = 5;
+    const int widthTitle = 20;
+    const int widthDate = 12;
+    const int widthStatus = 10;
+    const int widthDesc = 50; // увеличиваем ширину для текста описания
+    const int separatorSize = 6; // разделитель и пробелы
+    const int totalWidth = widthID + widthTitle + widthDate + widthStatus + widthDesc + separatorSize;
+
+    // Заголовок таблицы
+    cout << "+" << string(totalWidth - 2, '-') << "+" << endl;
+    cout << "| " << left << setw(widthID) << "ID"
+        << "| " << left << setw(widthTitle) << "Название"
+        << "| " << left << setw(widthDate) << "Дата"
+        << "| " << left << setw(widthStatus) << "Статус"
+        << "| " << left << setw(widthDesc) << "Описание"
+        << " |" << endl;
+    cout << "+" << string(totalWidth - 2, '-') << "+" << endl;
+
+    // Обработка каждой задачи
+    for (const auto& item : todoList) {
+        // разбиваем описание на линии
+        vector<string> descLines = splitString(item.description, widthDesc);
+        size_t maxLines = descLines.size();
+
+        // выводим в цикле
+        for (size_t i = 0; i < maxLines; ++i) {
+            cout << "| ";
+            if (i == 0) {
+                cout << left << setw(widthID) << item.id
+                    << "| " << left << setw(widthTitle) << item.title.substr(0, widthTitle - 1)
+                    << "| " << left << setw(widthDate) << item.dueDate
+                    << "| " << left << setw(widthStatus) << (item.isDone ? "Выполнена" : "Нет")
+                    << "| " << left << setw(widthDesc) << descLines[i] << " |" << endl;
+            }
+            else {
+                // для остальных строк описание
+                cout << left << setw(widthID) << " "
+                    << "| " << left << setw(widthTitle) << " "
+                    << "| " << left << setw(widthDate) << " "
+                    << "| " << left << setw(widthStatus) << " "
+                    << "| " << left << setw(widthDesc) << descLines[i] << " |" << endl;
+            }
+        }
+    }
+    cout << "+" << string(totalWidth - 2, '-') << "+" << endl;
 }
