@@ -1,4 +1,4 @@
-﻿#include "Source.hpp"
+#include "Source.hpp"
 using namespace std;
 
 int main() {
@@ -51,13 +51,13 @@ int main() {
 
     int choice;
     do {
-        choice = showMenu();
+        choice = showRenderMenu();
         switch (choice) {
         case 1:
             addTask(todoList, nextId);
             break;
         case 2:
-            showTasks(todoList);
+            renderTaskTable(todoList);
             break;
         case 3:
             markTaskAsDone(todoList);
@@ -69,18 +69,19 @@ int main() {
             deleteTask(todoList);
             break;
         case 6:
-            saveTasksToFile(todoList, currentUser->username);
+            saveTasksToFile(todoList);
             break;
         case 7:
-            loadTasksFromFile(todoList, nextId, currentUser->username);
+            loadTasksFromFile(todoList, nextId);
             break;
         case 8:
-            cout << "Выход из программы. До свидания!" << endl;
+            cout << "Выход. До свидания!\n";
             break;
         default:
-            cout << "Неверный выбор." << endl;
-            break;
+            cout << "Неверный выбор.\n";
         }
+        cout << "Нажмите Enter чтобы продолжить...";
+        cin.get();
     } while (choice != 8);
 
     return 0;
