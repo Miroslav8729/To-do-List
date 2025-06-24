@@ -1,40 +1,28 @@
-# ToDo List Application
+# Приложение списка дел
 
-A simple console-based ToDo list application written in C++.
+## Возможности
 
-## Features
+* Добавление задач с названием, сроком выполнения, описанием и статусом (выполнено/не выполнено).
 
-*   Add tasks with title, due date, description, and status (done/not done).
-*   Mark tasks as done.
-*   Edit task information.
-*   Delete tasks.
-*   View a list of all tasks.
-*   Save tasks to a file.
-*   Load tasks from a file.
-*   Console-based menu with navigation.
+* Отметка задач как выполненных.
+* Редактирование информации о задаче.
+* Удаление задач.
+* Просмотр списка всех задач.
+* Сохранение задач в файл.
+* Загрузка задач из файла.
+* Консольное меню с навигацией.
 
-## Requirements
 
-*   C++ compiler (e.g., g++)
-*   Standard C++ library
+## Инструкции по сборке
 
-## Build Instructions
+## Использование
 
-1.  Save the code into three files: `ConsoleApplication34.cpp`, `Source.hpp`
-2.  Compile the code using a C++ compiler.
+1. Запустите исполняемый файл.
+2. Следуйте инструкциям на экране, чтобы добавлять, просматривать, редактировать и управлять своим списком дел.
 
-## Usage
+## Структура файла
 
-1.  Run the executable.
-2.  Follow the on-screen instructions to add, view, edit, and manage your ToDo list.
+Проект организован в следующие файлы:
 
-## File Structure
-
-The project is organized into the following files:
-
-*   `ConsoleApplication34.cpp`: Contains the `main` function and the main application logic.
-*   `Source.hpp`: Contains function prototypes and implementations.
-
-## Version Control
-
-This project is managed using Git and hosted on GitHub.
+* ConsoleApplication34.cpp: Содержит функцию main и основную логику приложения.
+* Source.hpp: Содержит прототипы и реализации функций.
