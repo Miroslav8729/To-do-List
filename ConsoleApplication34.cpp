@@ -1,5 +1,4 @@
 #include "Source.hpp"
-using namespace std;
 
 int main() {
     setlocale(LC_ALL, "rus");
@@ -69,10 +68,10 @@ int main() {
             deleteTask(todoList);
             break;
         case 6:
-            saveTasksToFile(todoList);
+            saveTasksToFile(todoList, currentUser->username);
             break;
         case 7:
-            loadTasksFromFile(todoList, nextId);
+            loadTasksFromFile(todoList, nextId, currentUser->username);
             break;
         case 8:
             cout << "Выход. До свидания!\n";
