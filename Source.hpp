@@ -5,8 +5,9 @@
 #include <string>
 #include <vector>
 #include <iomanip> // Для форматирования вывода
-#include <limits> // Для std::numeric_limits
+#include <limits>   // Для std::numeric_limits
 #include <sstream> // Для обработки строк
+#include <algorithm> // Для std::max
 
 using namespace std;
 
@@ -67,19 +68,14 @@ inline bool loginUser(const vector<User>& users, string& currentUsername, User*&
     for (const auto& u : users) {
         if (u.username == username && u.password == password) {
             currentUsername = username;
-            // Пытаемся найти пользователя для доступа к данным
-            // Но поскольку у нас есть вектор пользователей, можно найти по имени
-            // и передать указатель
-            // Для этого лучше получить его тут
-            break;
-        }
-    }
-    // Пока ищем позже. Можно сделать так:
-    for (auto& u : const_cast<vector<User>&>(users)) { // не очень корректно, но допустимо для примера
-        if (u.username == username && u.password == password) {
-            currentUser = &u;
-            cout << "Вход выполнен успешно! Добро пожаловать, " << currentUser->username << "." << endl;
-            return true;
+            // Ищем указатель
+            for (auto& userRef : const_cast<vector<User>&>(users)) {
+                if (userRef.username == username && userRef.password == password) {
+                    currentUser = &userRef;
+                    cout << "Вход выполнен успешно! Добро пожаловать, " << currentUser->username << "." << endl;
+                    return true;
+                }
+            }
         }
     }
     cout << "Неверное имя пользователя или пароль." << endl;
@@ -115,35 +111,80 @@ inline void saveUsersToFile(const vector<User>& users) {
 }
 
 inline void loadTasksFromFile(vector<ToDoItem>& todoList, int& nextId, const string& username) {
-    string filename = username + "_tasks.txt";
-    ifstream file(filename);
+    string filename = username + "_tasks.dat"; // бинарный файл
+    ifstream file(filename, ios::binary);
     if (file.is_open()) {
-        string line;
-        while (getline(file, line)) {
-            stringstream ss(line);
+        todoList.clear();
+        nextId = 1;
+        while (file.peek() != EOF) {
             ToDoItem item;
-            string token;
 
-            getline(ss, token, ';');
-            item.id = stoi(token);
-            getline(ss, item.title, ';');
-            getline(ss, item.dueDate, ';');
-            getline(ss, item.description, ';');
-            getline(ss, token, ';');
-            item.isDone = (token == "1" || token == "true");
+            // Читаем ID
+            file.read(reinterpret_cast<char*>(&item.id), sizeof(item.id));
+            if (file.gcount() != sizeof(item.id)) break;
+
+            size_t size;
+            // Читаем название
+            file.read(reinterpret_cast<char*>(&size), sizeof(size));
+            string title(size, '\0');
+            file.read(&title[0], size);
+            item.title = title;
+
+            // Читаем дату
+            file.read(reinterpret_cast<char*>(&size), sizeof(size));
+            string date(size, '\0');
+            file.read(&date[0], size);
+            item.dueDate = date;
+
+            // Читаем описание
+            file.read(reinterpret_cast<char*>(&size), sizeof(size));
+            string description(size, '\0');
+            file.read(&description[0], size);
+            item.description = description;
+
+            // Читаем статус
+            file.read(reinterpret_cast<char*>(&item.isDone), sizeof(item.isDone));
+
             todoList.push_back(item);
             if (item.id >= nextId) nextId = item.id + 1;
         }
         file.close();
+        cout << "Задачи успешно загружены из файла." << endl;
+        cout << "Нажмите Enter для продолжения...";
+        cin.get();
+    }
+    else {
+        cout << "Файл задач пользователя не найден или поврежден. Будет создан новый." << endl;
     }
 }
 
 inline void saveTasksToFile(const vector<ToDoItem>& todoList, const string& username) {
-    string filename = username + "_tasks.txt";
-    ofstream file(filename);
+    string filename = username + "_tasks.dat"; // бинарный файл
+    ofstream file(filename, ios::binary);
     if (file.is_open()) {
         for (const auto& item : todoList) {
-            file << item.id << ";" << item.title << ";" << item.dueDate << ";" << item.description << ";" << (item.isDone ? "1" : "0") << "\n";
+            // Записываем id
+            file.write(reinterpret_cast<const char*>(&item.id), sizeof(item.id));
+
+            size_t size;
+
+            // Записываем title
+            size = item.title.size();
+            file.write(reinterpret_cast<const char*>(&size), sizeof(size));
+            file.write(&item.title[0], size);
+
+            // Записываем dueDate
+            size = item.dueDate.size();
+            file.write(reinterpret_cast<const char*>(&size), sizeof(size));
+            file.write(&item.dueDate[0], size);
+
+            // Записываем description
+            size = item.description.size();
+            file.write(reinterpret_cast<const char*>(&size), sizeof(size));
+            file.write(&item.description[0], size);
+
+            // Записываем isDone
+            file.write(reinterpret_cast<const char*>(&item.isDone), sizeof(item.isDone));
         }
         file.close();
         cout << "Задачи успешно сохранены." << endl;
@@ -162,7 +203,6 @@ inline void clearScreen() {
     system("clear");
 #endif
 }
-
 
 inline void addTask(vector<ToDoItem>& todoList, int& nextId) {
     ToDoItem newItem;
@@ -285,50 +325,8 @@ inline void deleteTask(vector<ToDoItem>& todoList) {
     cout << "Нажмите Enter для продолжения...";
     cin.get();
 }
-inline void saveTasksToFile(const vector<ToDoItem>& todoList) {
-    ofstream file("todo_list.txt");
-    if (file.is_open()) {
-        for (const auto& item : todoList) {
-            file << item.id << ";" << item.title << ";" << item.dueDate << ";" << item.description << ";" << item.isDone << endl;
-        }
-        file.close();
-        cout << "Задачи успешно сохранены в файл." << endl;
-        cout << "Нажмите Enter для продолжения...";
-        cin.get();
-    }
-    else {
-        cerr << "Ошибка: Не удалось открыть файл для сохранения." << endl;
-    }
-}
-inline void loadTasksFromFile(vector<ToDoItem>& todoList, int& nextId) {
-    ifstream file("todo_list.txt");
-    if (file.is_open()) {
-        string line;
-        while (getline(file, line)) {
-            stringstream ss(line);
-            ToDoItem item;
-            string token;
 
-            getline(ss, token, ';');
-            item.id = stoi(token);
-            getline(ss, item.title, ';');
-            getline(ss, item.dueDate, ';');
-            getline(ss, item.description, ';');
-            getline(ss, token, ';');
-            item.isDone = (token == "1" || token == "true"); // Преобразование строки в bool
 
-            todoList.push_back(item);
-            nextId = max(nextId, item.id + 1); // Обновляем nextId
-        }
-        file.close();
-        cout << "Задачи успешно загружены из файла." << endl;
-        cout << "Нажмите Enter для продолжения...";
-        cin.get();
-    }
-    else {
-        cerr << "Ошибка: Не удалось открыть файл для загрузки." << endl;
-    }
-}
 inline int showRenderMenu() {
     vector<string> options = {
         "Добавить задачу",
@@ -423,4 +421,59 @@ void renderTaskTable(const vector<ToDoItem>& todoList) {
         }
     }
     cout << "+" << string(totalWidth - 2, '-') << "+" << endl;
+}
+
+
+//----------------------------------------------
+//  Функции для работы с бинарными файлами
+//----------------------------------------------
+void loadUsersFromBinary(vector<User>& users) {
+    ifstream file("users.dat", ios::binary);
+    if (file.is_open()) {
+        User user;
+        while (file.read(reinterpret_cast<char*>(&user), sizeof(User))) {
+            users.push_back(user);
+        }
+        file.close();
+    }
+}
+
+void saveUsersToBinary(const vector<User>& users) {
+    ofstream file("users.dat", ios::binary);
+    if (file.is_open()) {
+        for (const auto& user : users) {
+            file.write(reinterpret_cast<const char*>(&user), sizeof(User));
+        }
+        file.close();
+    }
+}
+
+void loadTasksFromBinary(vector<ToDoItem>& todoList, int& nextId, const string& username) {
+    string filename = username + "_tasks.dat";
+    ifstream file(filename, ios::binary);
+    if (file.is_open()) {
+        ToDoItem item;
+        while (file.read(reinterpret_cast<char*>(&item), sizeof(ToDoItem))) {
+            todoList.push_back(item);
+            if (item.id >= nextId) nextId = item.id + 1;
+        }
+        file.close();
+    }
+}
+
+void saveTasksToBinary(const vector<ToDoItem>& todoList, const string& username) {
+    string filename = username + "_tasks.dat";
+    ofstream file(filename, ios::binary);
+    if (file.is_open()) {
+        for (const auto& item : todoList) {
+            file.write(reinterpret_cast<const char*>(&item), sizeof(ToDoItem));
+        }
+        file.close();
+        cout << "Задачи успешно сохранены." << endl;
+        cout << "Нажмите Enter для продолжения...";
+        cin.get();
+    }
+    else {
+        cerr << "Ошибка при сохранении задач." << endl;
+    }
 }
